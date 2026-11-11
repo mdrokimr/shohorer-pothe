@@ -1,0 +1,430 @@
+/* রাতের নীল আর জাফরান: শহরের সাইনবোর্ডের রং */
+:root {
+  color-scheme: dark;
+  --ink: #eef2f5;
+  --muted: #a8b4bf;
+  --navy: #14202b;
+  --panel: rgba(16, 24, 33, 0.78);
+  --line: rgba(255, 255, 255, 0.12);
+  --saffron: #ffb627;
+  --green: #3ddc84;
+  --red: #ff5a52;
+  --violet: #7b2cff;
+  --display: "Anek Bangla", "Hind Siliguri", "Noto Sans Bengali", sans-serif;
+  --body: "Hind Siliguri", "Noto Sans Bengali", "Nirmala UI", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; height: 100%; overflow: hidden; font-family: var(--body); color: var(--ink);
+  background: linear-gradient(to bottom, #6e9fcf 0%, #a9c6dd 40%, #e9d8bf 70%, #e9d8bf 100%);
+  -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: none;
+}
+#game { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+.hidden { display: none !important; }
+button { font-family: var(--body); cursor: pointer; }
+kbd {
+  display: inline-block; min-width: 22px; padding: 0 6px; margin-right: 2px; border-radius: 5px;
+  background: #24323f; border: 1px solid #3c4d5d; border-bottom-width: 2px; color: var(--ink);
+  font-family: var(--body); font-size: 12.5px; line-height: 1.6; text-align: center;
+}
+
+.screen {
+  position: fixed; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  overflow-y: auto; background: rgba(10, 16, 22, 0.35);
+}
+#loading { background: var(--navy); z-index: 30; }
+.card {
+  width: min(860px, 100%); margin: auto; background: rgba(16, 24, 33, 0.92); border: 1px solid var(--line);
+  border-top: 4px solid var(--saffron); border-radius: 14px; padding: 22px 24px; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+.card.small { width: min(380px, 100%); text-align: center; }
+.card h1 { font-family: var(--display); font-weight: 800; font-size: clamp(44px, 9vw, 76px); line-height: 1; margin: 4px 0 8px; color: var(--saffron); text-wrap: balance; }
+.card h2 { font-family: var(--display); font-weight: 700; font-size: 19px; margin: 0 0 6px; color: var(--saffron); }
+.tag { display: inline-block; font-size: 12.5px; font-weight: 600; letter-spacing: 0.5px; color: var(--navy); background: var(--saffron); padding: 2px 10px; border-radius: 4px; }
+.lead { font-size: 16.5px; line-height: 1.65; color: #d7dfe6; margin: 6px 0 14px; max-width: 64ch; }
+.cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.cols > div { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; min-width: 0; }
+.cols ul { margin: 0; padding-left: 16px; font-size: 14px; line-height: 1.75; color: #d0d8df; }
+.note { font-size: 13.5px; color: var(--muted); line-height: 1.6; margin: 12px 0 0; }
+.btn {
+  display: block; width: 100%; margin: 12px 0 0; padding: 12px 18px; font-size: 18px; font-weight: 600;
+  color: var(--ink); background: #24323f; border: 1px solid #3c4d5d; border-radius: 10px;
+}
+.btn:hover { background: #2c3c4b; }
+.btn:focus-visible { outline: 3px solid var(--saffron); outline-offset: 2px; }
+.btn.primary { background: var(--saffron); color: #1a1100; border-color: #ffc85a; font-family: var(--display); font-size: 22px; font-weight: 800; }
+#start .btn.primary { max-width: 300px; }
+.btn.small { padding: 8px 12px; font-size: 15px; }
+.check { display: flex; gap: 8px; align-items: center; justify-content: center; margin-top: 14px; font-size: 15px; }
+.check input { width: 18px; height: 18px; accent-color: var(--saffron); }
+
+/* ---------- HUD ---------- */
+#hud { position: fixed; inset: 0; z-index: 12; pointer-events: none; } /* টাচ বোতামের উপরে: ফোন/ম্যাপ বোতাম আর ফোনের কাজ চাপা যায় */
+.wallet {
+  position: absolute; left: max(14px, env(safe-area-inset-left)); top: max(12px, env(safe-area-inset-top));
+  background: var(--panel); border-radius: 10px; padding: 6px 14px 8px; border-left: 4px solid var(--green);
+}
+.money { font-family: var(--display); font-weight: 800; font-size: 30px; line-height: 1.1; color: var(--green); font-variant-numeric: tabular-nums; }
+.meta { font-size: 13px; color: var(--muted); }
+.meta b { color: var(--ink); }
+.mapbox { position: absolute; right: max(14px, env(safe-area-inset-right)); top: max(12px, env(safe-area-inset-top)); display: flex; flex-direction: column; align-items: center; gap: 6px; }
+#minimap { width: 180px; height: 180px; display: block; filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35)); }
+.icons { display: flex; gap: 6px; pointer-events: auto; }
+.icons button { height: 34px; min-width: 40px; padding: 0 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--ink); font-size: 15px; }
+.icons #btnPhone { background: var(--saffron); color: #1a1100; font-weight: 700; }
+.job {
+  position: absolute; left: 50%; top: max(12px, env(safe-area-inset-top)); transform: translateX(-50%); width: min(460px, calc(100vw - 440px)); min-width: 260px;
+  background: var(--panel); border-radius: 10px; padding: 7px 14px 8px; border-top: 3px solid var(--violet); text-align: center;
+}
+.jt { font-size: 12px; color: var(--saffron); font-weight: 700; letter-spacing: 0.4px; }
+.jx { font-size: 15.5px; font-weight: 600; line-height: 1.4; }
+.jd { font-size: 13px; color: var(--muted); }
+#jobTimer.late { color: var(--red); font-weight: 700; }
+.speedo {
+  position: absolute; right: max(18px, env(safe-area-inset-right)); bottom: max(18px, env(safe-area-inset-bottom));
+  background: var(--panel); border-radius: 12px; padding: 6px 16px 8px; text-align: right; min-width: 130px;
+}
+.speedo b { font-family: var(--display); font-weight: 800; font-size: 40px; line-height: 1; font-variant-numeric: tabular-nums; }
+.speedo span { font-size: 13px; color: var(--muted); margin-left: 4px; }
+.speedo small { display: block; font-size: 12.5px; color: var(--saffron); }
+.prompt {
+  position: absolute; left: 50%; bottom: 20%; transform: translateX(-50%); font-size: 17px; font-weight: 600;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 6px 14px; opacity: 0; transition: opacity 0.15s; white-space: nowrap;
+}
+.prompt.show { opacity: 1; }
+.toasts { position: absolute; left: 50%; top: 22%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.toast {
+  font-size: 15.5px; font-weight: 600; padding: 6px 14px; border-radius: 8px; background: var(--panel); border: 1px solid var(--line);
+  animation: toast 2.6s ease-out forwards; white-space: nowrap;
+}
+.toast.good { color: var(--green); }
+.announce {
+  position: absolute; left: 50%; top: 12%; transform: translate(-50%, -8px); max-width: min(92vw, 640px); padding: 8px 18px 9px; border-radius: 6px;
+  background: #120c05; border: 1px solid #5a3a12; color: #ffb547; font-weight: 700; font-size: 16px; letter-spacing: .02em; text-align: center;
+  text-shadow: 0 0 8px rgba(255, 170, 60, .55); box-shadow: 0 4px 18px rgba(0, 0, 0, .45), inset 0 0 0 2px rgba(255, 181, 71, .08);
+  opacity: 0; transition: opacity .35s, transform .35s; pointer-events: none;
+}
+.check.gfx { gap: 10px; }
+.check.gfx select { flex: 1; min-width: 0; font: inherit; font-size: 14px; padding: 6px 8px; border-radius: 8px; background: var(--panel); color: inherit; border: 1px solid var(--line); }
+.announce.show { opacity: 1; transform: translate(-50%, 0); }
+.announce::before { content: "🚇 "; }
+.toast.bad { color: var(--red); }
+.toast.money { color: var(--green); font-family: var(--display); font-size: 24px; font-weight: 800; }
+@keyframes toast { 0% { opacity: 0; transform: translateY(10px); } 10% { opacity: 1; transform: none; } 80% { opacity: 1; } 100% { opacity: 0; transform: translateY(-12px); } }
+#bubbles { position: absolute; inset: 0; overflow: hidden; }
+.bubble {
+  position: absolute; left: 0; top: 0; max-width: 220px; padding: 5px 10px 6px; border-radius: 12px; background: #fff; color: #1b1b1b;
+  font-size: 14px; line-height: 1.4; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+.bubble::after { content: ""; position: absolute; left: 50%; bottom: -8px; margin-left: -8px; border: 8px solid transparent; border-top-color: #fff; border-bottom: 0; }
+.bubble b { display: block; font-size: 11.5px; color: #777; font-weight: 600; }
+.waypoint { position: absolute; left: 0; top: 0; display: none; text-align: center; }
+.waypoint i { display: block; width: 18px; height: 18px; margin: 0 auto 2px; transform: rotate(45deg); border: 3px solid #fff; background: var(--saffron); box-shadow: 0 0 10px rgba(0, 0, 0, 0.4); }
+.waypoint.drop i { background: var(--green); }
+.waypoint span { font-size: 12.5px; font-weight: 700; color: #fff; text-shadow: 0 1px 4px #000; }
+.keyhint {
+  position: absolute; left: 50%; bottom: max(12px, env(safe-area-inset-bottom)); transform: translateX(-50%); font-size: 12.5px; color: #e6edf2;
+  background: var(--panel); padding: 4px 12px; border-radius: 8px; white-space: nowrap;
+}
+.keyhint kbd { font-size: 11px; }
+body.touching .keyhint { display: none; }
+body.touching .speedo { bottom: auto; top: 250px; }
+
+.phone {
+  position: absolute; right: max(14px, env(safe-area-inset-right)); top: 250px; width: min(360px, calc(100vw - 28px)); pointer-events: auto;
+  background: #0f1720; border: 2px solid #2c3a48; border-radius: 22px; padding: 12px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+.phone-top { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+.phone-top b { font-family: var(--display); font-size: 22px; color: var(--saffron); }
+.phone-top span { font-size: 13px; color: var(--muted); flex: 1; }
+.phone-top button { border: none; background: #24323f; color: var(--ink); width: 30px; height: 30px; border-radius: 50%; font-size: 14px; }
+.offers { display: flex; flex-direction: column; gap: 8px; }
+.offer {
+  display: grid; grid-template-columns: 28px 1fr auto; gap: 10px; align-items: center; text-align: left; width: 100%;
+  background: #18232e; border: 1px solid var(--line); border-radius: 12px; padding: 9px 10px; color: var(--ink);
+}
+.offer:hover { border-color: var(--saffron); }
+.offer i { font-style: normal; width: 26px; height: 26px; border-radius: 50%; background: var(--saffron); color: #1a1100; display: grid; place-items: center; font-weight: 700; }
+.offer div { min-width: 0; }
+.offer b { display: block; font-size: 14.5px; }
+.offer span { display: block; font-size: 12.5px; color: #c9d3db; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.offer small { display: block; font-size: 11.5px; color: var(--muted); }
+.offer em { font-style: normal; font-family: var(--display); font-weight: 800; font-size: 18px; color: var(--green); }
+.offer.active { grid-template-columns: 1fr; border-color: var(--violet); }
+.phone-tip { font-size: 12px; color: var(--muted); line-height: 1.5; margin-top: 8px; }
+
+.touch { position: fixed; inset: 0; z-index: 11; pointer-events: none; }
+.joy {
+  position: absolute; left: max(22px, env(safe-area-inset-left)); bottom: max(24px, env(safe-area-inset-bottom)); width: 130px; height: 130px;
+  border-radius: 50%; background: rgba(16, 24, 33, 0.35); border: 2px solid rgba(255, 255, 255, 0.35); pointer-events: auto; touch-action: none;
+}
+.knob { position: absolute; left: 50%; top: 50%; width: 56px; height: 56px; margin: -28px 0 0 -28px; border-radius: 50%; background: rgba(255, 255, 255, 0.55); }
+.lookpad { position: absolute; left: 45%; right: 0; top: 30%; bottom: 0; pointer-events: auto; touch-action: none; }
+.tbtns {
+  position: absolute; right: max(16px, env(safe-area-inset-right)); bottom: max(20px, env(safe-area-inset-bottom)); display: grid; grid-template-columns: 1fr 1fr; gap: 10px; pointer-events: auto;
+}
+.t-btn { width: 76px; height: 60px; border-radius: 14px; border: 2px solid rgba(255, 255, 255, 0.45); background: rgba(16, 24, 33, 0.6); color: #fff; font-size: 14px; font-weight: 700; touch-action: none; }
+.t-btn.use { background: rgba(255, 182, 39, 0.8); color: #1a1100; }
+.t-btn.on { transform: scale(0.94); border-color: var(--saffron); }
+.error { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 50; max-width: 92vw; background: #7a1018; color: #fff; padding: 10px 16px; border-radius: 10px; font-size: 14px; }
+
+@media (max-width: 760px) {
+  .cols { grid-template-columns: 1fr; }
+  .card { padding: 16px 14px; }
+  #minimap { width: 120px; height: 120px; }
+  .money { font-size: 22px; }
+  .job { left: 12px; right: 12px; transform: none; width: auto; min-width: 0; top: 168px; }
+  .phone { top: 170px; }
+  body.touching .speedo { top: 168px; right: 12px; }
+  body.touching .job { top: 92px; right: 150px; }
+}
+@media (max-height: 520px) {
+  #minimap { width: 110px; height: 110px; }
+  .phone { top: 12px; right: 140px; max-height: calc(100vh - 24px); overflow-y: auto; }
+  .joy { width: 110px; height: 110px; }
+  .t-btn { width: 68px; height: 48px; }
+  .tbtns { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  body.touching .speedo { top: 160px; }
+  .job { top: 8px; width: min(360px, calc(100vw - 360px)); }
+}
+
+/* ---------- পুলিশ: তারকা, ধরা পড়ার মিটার, মামলার কার্ড ---------- */
+.stars { display: flex; gap: 2px; margin-top: 2px; font-size: 20px; line-height: 1; }
+.stars b { color: rgba(255, 255, 255, 0.22); }
+.stars b.on { color: var(--saffron); text-shadow: 0 0 8px rgba(255, 182, 39, 0.6); }
+.stars:not(.fading) b.on { animation: starblink 0.9s steps(2) infinite; }
+.stars.fading b.on { opacity: 0.55; }
+@keyframes starblink { 50% { color: #fff; } }
+.bustbar {
+  position: absolute; left: 50%; bottom: calc(20% + 46px); transform: translateX(-50%); width: min(300px, 80vw);
+  background: var(--panel); border: 1px solid rgba(255, 90, 82, 0.6); border-radius: 8px; padding: 6px 12px 8px; text-align: center;
+}
+.bustbar span { font-size: 14px; font-weight: 700; color: var(--red); }
+.bustbar i { display: block; height: 6px; margin-top: 5px; border-radius: 3px; background: rgba(255, 255, 255, 0.12); overflow: hidden; }
+.bustbar b { display: block; height: 100%; width: 0; background: var(--red); }
+#busted { background: rgba(10, 16, 22, 0.6); }
+.case { border-top-color: var(--red); text-align: left; position: relative; }
+.case .stamp {
+  display: inline-block; font-family: var(--display); font-weight: 800; font-size: 34px; color: var(--red);
+  border: 3px solid var(--red); border-radius: 6px; padding: 0 12px; transform: rotate(-4deg); margin: 2px 0 8px;
+}
+.case-no { font-size: 13.5px; color: var(--muted); }
+.case-stars { font-size: 20px; color: var(--saffron); letter-spacing: 2px; margin: 2px 0 6px; }
+.case h3 { font-family: var(--display); font-size: 16px; margin: 6px 0 2px; color: var(--ink); }
+.case ul { margin: 0 0 8px; padding-left: 18px; font-size: 15px; line-height: 1.7; color: #d7dfe6; }
+.case-row { display: flex; justify-content: space-between; align-items: baseline; font-size: 16px; padding: 4px 0; border-top: 1px solid var(--line); }
+.case-row b { font-family: var(--display); font-size: 24px; color: var(--red); font-variant-numeric: tabular-nums; }
+.case-paid { font-size: 13px; color: var(--muted); min-height: 0; }
+.jail { height: 6px; margin-top: 8px; border-radius: 3px; background: rgba(255, 255, 255, 0.12); overflow: hidden; }
+.jail i { display: block; height: 100%; width: 0; background: var(--saffron); }
+.jail i.run { animation: jail 3.2s linear forwards; }
+@keyframes jail { to { width: 100%; } }
+.case .btn:disabled { opacity: 0.45; cursor: default; }
+.case-note { font-size: 12.5px; color: var(--muted); margin: 8px 0 0; text-align: center; }
+@media (prefers-reduced-motion: reduce) { .stars b.on { animation: none; } }
+
+/* ---------- স্বাস্থ্য, অস্ত্র, নিশানা, দোকান ---------- */
+.hp { width: 150px; height: 7px; margin-top: 5px; border-radius: 4px; background: rgba(255, 255, 255, 0.14); overflow: hidden; }
+.hp i { display: block; height: 100%; width: 100%; background: var(--green); transition: width 0.15s; }
+.hp i.low { background: var(--red); }
+.weapon { font-size: 13px; color: var(--ink); margin-top: 3px; font-weight: 600; }
+.cross { position: absolute; left: 50%; top: 50%; width: 22px; height: 22px; margin: -11px 0 0 -11px; }
+.cross::before, .cross::after { content: ""; position: absolute; background: #fff; box-shadow: 0 0 3px #000; }
+.cross::before { left: 10px; top: 0; width: 2px; height: 22px; }
+.cross::after { top: 10px; left: 0; height: 2px; width: 22px; }
+.hurt { position: absolute; inset: 0; pointer-events: none; opacity: 0; box-shadow: inset 0 0 120px 30px rgba(200, 0, 0, 0.75); transition: opacity 0.25s; }
+.t-btn.fight { background: rgba(160, 30, 30, 0.7); }
+.shopcard { text-align: left; border-top-color: var(--saffron); }
+.shop-sub { font-size: 14px; color: var(--muted); margin: 0 0 10px; font-style: italic; }
+.shop-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
+.shop-row b { display: block; font-size: 17px; }
+.shop-row small { font-size: 12.5px; color: var(--muted); }
+.shop-row .btn { width: auto; margin: 0; min-width: 96px; }
+.shop-row .btn:disabled { opacity: 0.45; cursor: default; }
+.shop-money { font-size: 15px; color: var(--muted); padding-top: 8px; border-top: 1px solid var(--line); }
+.shop-money b { color: var(--green); }
+.money.debt, .shop-money b.debt { color: #ff5a5a; text-shadow: 0 0 10px rgba(255,60,60,.35); }
+.case.hospital { border-top-color: #e53935; }
+.case.hospital .stamp { color: #fff; background: #c62828; border-color: #c62828; }
+#wasted { background: rgba(60, 0, 0, 0.55); }
+/* মেরামত বোতাম: শুধু ক্ষতিগ্রস্ত যানবাহনের কাছে */
+.t-btn.fix { background: rgba(30, 110, 60, 0.8); }
+body:not(.canfix) .t-btn.fix { display: none; }
+.clock { margin-top: 3px; font-size: 13px; font-weight: 600; color: rgba(255, 255, 255, 0.85); }
+
+/* বড় ম্যাপ */
+.bigmap { position: fixed; inset: 0; z-index: 22; background: #1b2229; }
+.bigmap canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
+.bm-top { position: absolute; left: 12px; right: 12px; top: max(10px, env(safe-area-inset-top)); display: flex; align-items: center; gap: 10px; padding: 8px 10px 8px 14px; background: rgba(16, 24, 33, 0.85); border: 1px solid var(--line); border-radius: 12px; color: var(--ink); }
+.bm-top b { font-size: 17px; }
+.bm-top span { flex: 1; min-width: 0; font-size: 13px; opacity: 0.85; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bm-top button, .bm-tools button { height: 38px; min-width: 42px; padding: 0 12px; border: 1px solid #3c4d5d; border-radius: 10px; background: #24323f; color: var(--ink); font-size: 15px; font-weight: 700; }
+.bm-tools { position: absolute; right: 12px; bottom: max(14px, env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 8px; }
+.bm-legend { position: absolute; left: 12px; bottom: max(14px, env(safe-area-inset-bottom)); max-width: calc(100% - 150px); display: flex; flex-wrap: wrap; gap: 4px 10px; padding: 8px 10px; background: rgba(16, 24, 33, 0.8); border-radius: 10px; color: var(--ink); font-size: 12px; }
+.bm-legend span { display: inline-flex; align-items: center; gap: 4px; }
+.bm-legend i { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #fff; font-style: normal; font-size: 9px; font-weight: 700; color: #fff; }
+.waypoint.mark i { background: #b026ff; }
+#minimap { cursor: pointer; pointer-events: auto; }
+@media (max-width: 760px) { .bm-legend { display: none; } }
+
+/* ডুবে থাকলে দমের দাগ */
+.hp.breath { margin-top: 3px; }
+.hp.breath i { background: #4fc3f7; }
+
+/* GTA মোবাইলের মতো চালানোর বোতাম (গাড়িতে থাকলে) */
+.dpad, .pedals { display: none; position: absolute; bottom: max(18px, env(safe-area-inset-bottom)); gap: 12px; pointer-events: auto; }
+.dpad { left: max(18px, env(safe-area-inset-left)); }
+.pedals { right: max(16px, env(safe-area-inset-right)); align-items: flex-end; }
+body.driving .dpad, body.driving .pedals { display: flex; }
+body.driving .joy { display: none; }
+body.driving .tbtns { right: calc(max(16px, env(safe-area-inset-right)) + 190px); grid-template-columns: 1fr 1fr; }
+body.driving .t-btn.fight { display: none; }
+.t-arrow { width: 92px; height: 92px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.5); background: rgba(16, 24, 33, 0.5); color: #fff; font-size: 38px; line-height: 1; touch-action: none; }
+.t-pedal { width: 84px; border-radius: 16px; border: 2px solid rgba(255, 255, 255, 0.5); color: #fff; font-size: 30px; font-weight: 800; touch-action: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+.t-pedal small { font-size: 13px; font-weight: 700; }
+.t-pedal.gas { height: 128px; background: rgba(46, 125, 50, 0.72); }
+.t-pedal.brake { height: 96px; background: rgba(183, 28, 28, 0.7); }
+.t-arrow.on, .t-pedal.on { transform: scale(0.93); border-color: var(--saffron); }
+@media (max-height: 520px) {
+  .t-arrow { width: 80px; height: 80px; font-size: 32px; }
+  .t-pedal { width: 76px; } .t-pedal.gas { height: 112px; } .t-pedal.brake { height: 84px; }
+  body.driving .tbtns { right: calc(max(16px, env(safe-area-inset-right)) + 176px); grid-template-columns: 1fr 1fr; }
+}
+/* খাড়া ফোনে: আড়াআড়ি করতে বলা */
+.rotate { display: none; position: fixed; inset: 0; z-index: 60; background: rgba(10, 14, 20, 0.94); color: #fff; align-items: center; justify-content: center; text-align: center; padding: 24px; }
+.rotate b { display: block; font-size: 20px; margin: 10px 0 6px; }
+.rotate small { color: #b8c2cc; font-size: 14px; }
+.rot-ico { font-size: 54px; animation: rot 1.8s ease-in-out infinite; }
+@keyframes rot { 0%, 30% { transform: rotate(0); } 60%, 100% { transform: rotate(-90deg); } }
+@media (orientation: portrait) { body.touching.playing .rotate { display: flex; } }
+
+body.driving:not(.flying) .t-btn[data-key="run"] { display: none; }
+
+/* দরকারি বোতামই দেখা যায় (GTA মোবাইলের মতো) */
+body.touching:not(.driving):not(.canuse) .t-btn.use { display: none; }
+body:not(.driving) .t-btn[data-key="horn"] { display: none; }
+body:not(.armed) .t-btn[data-key="shoot"] { display: none; }
+#prompt { pointer-events: none; }
+.ver-label { margin-top: 10px; font-size: 13px; color: var(--muted); text-align: center; }
+
+/* ===== GTA V মোবাইলের মতো বোতাম (V36) ===== */
+.tbtns { display: block; width: 250px; height: 240px; grid-template-columns: none; pointer-events: none; }
+.tbtns > * { position: absolute; pointer-events: auto; }
+.t-round { border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.55); background: rgba(12, 18, 26, 0.42); color: #fff; font-size: 24px; line-height: 1; touch-action: none; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
+.t-round.on { transform: scale(0.92); border-color: var(--saffron); background: rgba(255, 182, 39, 0.35); }
+.fightb { right: 0; bottom: 0; width: 94px; height: 94px; font-size: 40px; background: rgba(183, 28, 28, 0.5); }
+.jump { right: 108px; bottom: 6px; width: 62px; height: 62px; font-size: 28px; }
+.sprint { right: 16px; bottom: 108px; width: 62px; height: 62px; }
+.gun { right: 96px; bottom: 88px; width: 58px; height: 58px; }
+.horn { display: none; }
+.tbtns .t-btn { width: auto; min-width: 86px; height: 44px; padding: 0 16px; border-radius: 22px; font-size: 15px; }
+.tbtns .use { right: 0; bottom: 184px; }
+.tbtns .fix { right: 100px; bottom: 184px; }
+body:not(.armed) .gun { display: none; }
+/* গাড়িতে: শুধু হর্ন, হ্যান্ডব্রেক আর নামা (প্যাডেলের উপরে) */
+body.driving .tbtns { right: max(16px, env(safe-area-inset-right)); bottom: calc(max(18px, env(safe-area-inset-bottom)) + 140px); width: 260px; height: 64px; grid-template-columns: none; }
+body.driving .fightb, body.driving .gun, body.driving .sprint { display: none; }
+body.driving.flying .sprint { display: flex; right: 132px; bottom: 0; }
+body.driving .horn { display: flex; right: 0; bottom: 0; width: 56px; height: 56px; }
+body.driving .jump { right: 66px; bottom: 0; width: 56px; height: 56px; font-size: 13px; font-weight: 800; }
+body.driving .tbtns .use { right: 132px; bottom: 6px; }
+body.driving.flying .tbtns .use { right: 198px; }
+body.driving .tbtns .fix { right: 132px; bottom: 60px; }
+/* উপরের বোতাম ছোট গোল আইকন, টাকার প্যানেল ছোট */
+body.touching .icons button { width: 38px; min-width: 0; height: 38px; padding: 0; border-radius: 50%; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+body.touching #minimap { width: 124px; height: 124px; }
+body.touching .wallet { padding: 4px 10px 6px; border-left-width: 3px; }
+body.touching .money { font-size: 22px; }
+body.touching .wallet .meta, body.touching .wallet .weapon { display: none; }
+body.touching .clock { font-size: 12px; }
+@media (max-height: 520px) {
+  .tbtns { width: 230px; height: 220px; }
+  .fightb { width: 84px; height: 84px; font-size: 36px; }
+  .jump { right: 96px; width: 56px; height: 56px; }
+  .sprint { right: 14px; bottom: 96px; width: 56px; height: 56px; }
+  .gun { right: 86px; bottom: 80px; width: 52px; height: 52px; }
+  .tbtns .use { bottom: 160px; } .tbtns .fix { bottom: 160px; }
+  body.driving .tbtns { bottom: calc(max(14px, env(safe-area-inset-bottom)) + 122px); }
+  body.touching #minimap { width: 108px; height: 108px; }
+}
+/* গাড়িতে (ফোন): স্পিডোমিটার নিচে মাঝখানে, বোতামের লেখা-ইঙ্গিত লাগে না */
+/* গাড়িতে (ফোন): ছোট স্পিডোমিটার, টাকার প্যানেলের ঠিক নিচে বাঁয়ে (top জাভাস্ক্রিপ্ট বসায়); বোতামের পথ খালি থাকে */
+body.touching.driving .speedo { top: var(--speedo-top, 96px) !important; bottom: auto !important; right: auto !important; left: max(14px, env(safe-area-inset-left)) !important; transform: none !important; min-width: 0; padding: 3px 10px 4px; border-radius: 8px; text-align: left; display: flex; align-items: baseline; gap: 2px; flex-wrap: wrap; max-width: 46vw; }
+body.touching.driving .speedo b { font-size: 22px; }
+body.touching.driving .speedo span { font-size: 10px; margin-left: 2px; }
+body.touching.driving .speedo small { display: inline; font-size: 10px; margin-left: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 26vw; }
+@media (max-height: 340px) { body.touching.driving .speedo b { font-size: 17px; } body.touching.driving .speedo { padding: 2px 8px 3px; } }
+body.touching.driving #prompt { display: none; }
+
+/* মিশনের লক্ষ্য (উপরে মাঝখানে) আর ফোনের মিশন তালিকা */
+.mission-obj { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); max-width: min(560px, 70vw); background: rgba(10, 14, 20, 0.72); color: #ffe082; border: 1px solid rgba(255, 193, 7, 0.55); border-radius: 12px; padding: 7px 14px; font-weight: 700; font-size: 15px; text-align: center; pointer-events: none; }
+.mission-obj.hidden { display: none; }
+.phone-sec { font-weight: 800; color: var(--saffron); margin: 8px 2px 4px; font-size: 14px; }
+.offer.mission i { color: #ffc107; }
+@media (max-height: 520px) { .mission-obj { top: 6px; font-size: 13px; padding: 5px 10px; } }
+
+/* ---------- খুব কম উঁচু পর্দা (ফোনের অ্যাপের ভিতরে আড়াআড়ি, ~২৫০-৪২০ পিক্সেল উঁচু): বাটন একটার উপর আরেকটা না পড়ে ---------- */
+@media (max-height: 420px) {
+  .tbtns { transform: scale(0.8); transform-origin: bottom right; }
+  body.driving .tbtns { transform: scale(0.8); transform-origin: bottom right; bottom: calc(max(10px, env(safe-area-inset-bottom)) + 100px); }
+  .dpad { transform: scale(0.8); transform-origin: bottom left; }
+  .pedals { transform: scale(0.8); transform-origin: bottom right; }
+  body.touching #minimap, #minimap { width: 92px; height: 92px; }
+  .mapbox { flex-direction: row-reverse; align-items: flex-start; }
+  .icons { flex-direction: row; margin-top: 2px; }
+  body.touching .icons button { width: 32px; height: 32px; font-size: 15px; }
+}
+@media (max-height: 340px) {
+  .tbtns, body.driving .tbtns { transform: scale(0.62); }
+  body.driving .tbtns { bottom: calc(max(8px, env(safe-area-inset-bottom)) + 96px); }
+  .dpad, .pedals { transform: scale(0.62); }
+  .joy { width: 86px !important; height: 86px !important; }
+  .knob { width: 38px; height: 38px; margin: -19px 0 0 -19px; }
+  body.touching #minimap, #minimap { width: 72px; height: 72px; }
+  body.touching .icons button { width: 28px; height: 28px; font-size: 13px; }
+  .icons { gap: 4px; }
+  .wallet { padding: 3px 9px 4px; }
+  .money, body.touching .money { font-size: 16px; }
+  .meta { font-size: 10px; }
+  .weapon, .clock { font-size: 10px; }
+  .toasts { top: 30%; }
+  .toast { font-size: 12px; padding: 5px 10px; }
+  .toast.money { font-size: 16px; }
+  .prompt { font-size: 12px; padding: 5px 12px; }
+  .mission-obj { top: 4px; font-size: 11px; padding: 3px 8px; }
+  body:not(.touching) .speedo { transform: scale(0.7); transform-origin: bottom right; }
+  .error { font-size: 11px; padding: 6px 10px; bottom: 6px; }
+}
+
+/* ---------- জ্বালানির দাগ (স্পিডোমিটারের ভিতরে) ---------- */
+.fuelg { display: flex; align-items: center; gap: 6px; margin-top: 4px; font-size: 11.5px; color: var(--muted); }
+.fuelg i { flex: 1; height: 6px; min-width: 60px; background: rgba(255,255,255,0.14); border-radius: 3px; overflow: hidden; }
+.fuelg i b { display: block; height: 100%; width: 50%; background: #3ddc84; transition: width 0.3s; }
+.fuelg.low i b { background: #ff5a5a; }
+.fuelg.low span { color: #ff7a7a; animation: blinkLow 0.9s steps(2) infinite; }
+@keyframes blinkLow { 50% { opacity: 0.3; } }
+body.touching.driving .speedo .fuelg { flex-basis: 100%; margin-top: 2px; font-size: 9.5px; gap: 4px; }
+body.touching.driving .speedo .fuelg i { min-width: 40px; height: 4px; }
+
+/* ---------- রাইড অ্যাপের রিকোয়েস্ট ---------- */
+.ridereq { position: absolute; left: 50%; top: 64px; transform: translateX(-50%); width: min(360px, 86vw); background: rgba(14, 18, 26, 0.94); border: 1px solid rgba(61, 220, 132, 0.6); border-radius: 14px; padding: 10px 14px 12px; pointer-events: auto; z-index: 5; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+.ridereq .rr-app { font-size: 12px; color: #3ddc84; font-weight: 700; }
+.ridereq .rr-who { font-size: 17px; font-weight: 800; margin-top: 2px; }
+.ridereq .rr-route { font-size: 13px; color: var(--ink); opacity: 0.9; margin-top: 2px; }
+.ridereq .rr-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.ridereq .rr-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.ridereq .rr-fare { flex: 1; font-style: normal; font-family: var(--display); font-size: 24px; font-weight: 800; color: #3ddc84; }
+.ridereq button { border: 0; border-radius: 10px; padding: 8px 14px; font: inherit; font-weight: 700; font-size: 15px; cursor: pointer; }
+.ridereq .rr-no { background: rgba(255,255,255,0.12); color: var(--ink); }
+.ridereq .rr-yes { background: #3ddc84; color: #06210f; }
+.ridereq .rr-bar { display: block; height: 3px; margin-top: 8px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+.ridereq .rr-bar b { display: block; height: 100%; width: 100%; background: #3ddc84; }
+body.touching .ridereq { top: auto; bottom: max(10px, env(safe-area-inset-bottom)); width: min(340px, 48vw); }
+@media (max-height: 420px) { body.touching .ridereq, .ridereq { width: min(300px, 46vw); padding: 6px 10px 8px; } .ridereq .rr-who { font-size: 14px; } .ridereq .rr-route, .ridereq .rr-meta { font-size: 11px; } .ridereq .rr-fare { font-size: 18px; } .ridereq button { padding: 6px 10px; font-size: 13px; } .ridereq .rr-row { margin-top: 4px; } }
+
+/* ---------- কাজের বোতাম (তেল ভরা, গ্যারেজে রাখা): গাড়িতে হর্নের উপরে ---------- */
+.t-btn.act { background: rgba(255, 143, 0, 0.85); color: #1a1100; font-weight: 800; }
+body:not(.canact) .t-btn.act { display: none; }
+.tbtns .act { right: 0; bottom: 236px; }
+body.driving .tbtns .act { right: 0; bottom: 62px; }

@@ -1,0 +1,53 @@
+[
+ {
+  "name": "tree_lp1",
+  "src": "3e0b67b3-tree_low_poly_lowpoly",
+  "height": 7,
+  "tris": 2000,
+  "skip": "^Tree 2$"
+ },
+ {
+  "name": "tree_lp2",
+  "src": "3e0b67b3-tree_low_poly_lowpoly",
+  "height": 7,
+  "tris": 2000,
+  "skip": "^Tree 1$"
+ },
+ {
+  "name": "tree_mango",
+  "src": "d7d9268f-tree",
+  "height": 7.5,
+  "tris": 9000,
+  "skip": "Object_3$"
+ },
+ {
+  "name": "tree_a1",
+  "src": "b3a928a7-tree_animate",
+  "height": 7.5,
+  "tris": 8000,
+  "crop": [
+   0,
+   0.36
+  ]
+ },
+ {
+  "name": "tree_a2",
+  "src": "b3a928a7-tree_animate",
+  "height": 7.5,
+  "tris": 8000,
+  "crop": [
+   0.36,
+   0.72
+  ]
+ },
+ {
+  "name": "tree_a3",
+  "src": "b3a928a7-tree_animate",
+  "height": 7,
+  "tris": 8000,
+  "crop": [
+   0.72,
+   1.01
+  ]
+ }
+]

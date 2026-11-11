@@ -1,0 +1,36 @@
+# dependencies / caches
+node_modules/
+.npm/
+.cache/
+
+# env / secrets
+.env
+.env.*
+!.env.example
+*.pem
+credentials.json
+service-account*.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# build / temp
+dist/
+build/
+tmp/
+temp/
+*.log
+*.tmp
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# local game saves (browser mirrors if any)
+localStorage/
+*.local.json

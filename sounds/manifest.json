@@ -1,0 +1,287 @@
+{
+ "voice": {
+  "angry_ride_01": {
+   "f": "voice/angry_ride_01_f.mp3",
+   "m": "voice/angry_ride_01_m.mp3"
+  },
+  "angry_ride_02": {
+   "f": "voice/angry_ride_02_f.mp3",
+   "m": "voice/angry_ride_02_m.mp3"
+  },
+  "buspass_01": {
+   "f": "voice/buspass_01_f.mp3",
+   "m": "voice/buspass_01_m.mp3"
+  },
+  "buspass_02": {
+   "f": "voice/buspass_02_f.mp3",
+   "m": "voice/buspass_02_m.mp3"
+  },
+  "buspass_03": {
+   "f": "voice/buspass_03_f.mp3",
+   "m": "voice/buspass_03_m.mp3"
+  },
+  "busted_01": {
+   "m": "voice/busted_01_m.mp3"
+  },
+  "cop_01": {
+   "m": "voice/cop_01_m.mp3"
+  },
+  "cop_02": {
+   "m": "voice/cop_02_m.mp3"
+  },
+  "cop_03": {
+   "m": "voice/cop_03_m.mp3"
+  },
+  "cop_04": {
+   "m": "voice/cop_04_m.mp3"
+  },
+  "cop_gun_01": {
+   "m": "voice/cop_gun_01_m.mp3"
+  },
+  "cop_gun_02": {
+   "m": "voice/cop_gun_02_m.mp3"
+  },
+  "cop_gun_03": {
+   "m": "voice/cop_gun_03_m.mp3"
+  },
+  "crowd_01": {
+   "f": "voice/crowd_01_f.mp3",
+   "m": "voice/crowd_01_m.mp3"
+  },
+  "crowd_02": {
+   "f": "voice/crowd_02_f.mp3",
+   "m": "voice/crowd_02_m.mp3"
+  },
+  "crowd_03": {
+   "f": "voice/crowd_03_f.mp3",
+   "m": "voice/crowd_03_m.mp3"
+  },
+  "crowd_04": {
+   "f": "voice/crowd_04_f.mp3",
+   "m": "voice/crowd_04_m.mp3"
+  },
+  "crowd_05": {
+   "f": "voice/crowd_05_f.mp3",
+   "m": "voice/crowd_05_m.mp3"
+  },
+  "crowd_06": {
+   "f": "voice/crowd_06_f.mp3",
+   "m": "voice/crowd_06_m.mp3"
+  },
+  "dead_01": {
+   "f": "voice/dead_01_f.mp3",
+   "m": "voice/dead_01_m.mp3"
+  },
+  "dead_02": {
+   "f": "voice/dead_02_f.mp3",
+   "m": "voice/dead_02_m.mp3"
+  },
+  "dead_03": {
+   "f": "voice/dead_03_f.mp3",
+   "m": "voice/dead_03_m.mp3"
+  },
+  "dead_04": {
+   "f": "voice/dead_04_f.mp3",
+   "m": "voice/dead_04_m.mp3"
+  },
+  "driver_01": {
+   "m": "voice/driver_01_m.mp3"
+  },
+  "driver_02": {
+   "m": "voice/driver_02_m.mp3"
+  },
+  "driver_03": {
+   "m": "voice/driver_03_m.mp3"
+  },
+  "driver_04": {
+   "m": "voice/driver_04_m.mp3"
+  },
+  "fight_01": {
+   "f": "voice/fight_01_f.mp3",
+   "m": "voice/fight_01_m.mp3"
+  },
+  "fight_02": {
+   "f": "voice/fight_02_f.mp3",
+   "m": "voice/fight_02_m.mp3"
+  },
+  "fight_03": {
+   "f": "voice/fight_03_f.mp3",
+   "m": "voice/fight_03_m.mp3"
+  },
+  "flee_01": {
+   "f": "voice/flee_01_f.mp3",
+   "m": "voice/flee_01_m.mp3"
+  },
+  "flee_02": {
+   "f": "voice/flee_02_f.mp3",
+   "m": "voice/flee_02_m.mp3"
+  },
+  "flee_03": {
+   "f": "voice/flee_03_f.mp3",
+   "m": "voice/flee_03_m.mp3"
+  },
+  "flee_04": {
+   "f": "voice/flee_04_f.mp3",
+   "m": "voice/flee_04_m.mp3"
+  },
+  "flee_05": {
+   "f": "voice/flee_05_f.mp3",
+   "m": "voice/flee_05_m.mp3"
+  },
+  "hospital_01": {
+   "f": "voice/hospital_01_f.mp3"
+  },
+  "jacked_01": {
+   "m": "voice/jacked_01_m.mp3"
+  },
+  "jacked_02": {
+   "m": "voice/jacked_02_m.mp3"
+  },
+  "jacked_03": {
+   "m": "voice/jacked_03_m.mp3"
+  },
+  "jacked_04": {
+   "m": "voice/jacked_04_m.mp3"
+  },
+  "pass_flip_01": {
+   "f": "voice/pass_flip_01_f.mp3",
+   "m": "voice/pass_flip_01_m.mp3"
+  },
+  "pass_flip_02": {
+   "f": "voice/pass_flip_02_f.mp3",
+   "m": "voice/pass_flip_02_m.mp3"
+  },
+  "ped_bump_01": {
+   "f": "voice/ped_bump_01_f.mp3",
+   "m": "voice/ped_bump_01_m.mp3"
+  },
+  "ped_bump_02": {
+   "f": "voice/ped_bump_02_f.mp3"
+  },
+  "ped_bump_03": {
+   "f": "voice/ped_bump_03_f.mp3",
+   "m": "voice/ped_bump_03_m.mp3"
+  },
+  "ped_hit_01": {
+   "f": "voice/ped_hit_01_f.mp3",
+   "m": "voice/ped_hit_01_m.mp3"
+  },
+  "ped_hit_02": {
+   "f": "voice/ped_hit_02_f.mp3",
+   "m": "voice/ped_hit_02_m.mp3"
+  },
+  "ped_hit_03": {
+   "f": "voice/ped_hit_03_f.mp3",
+   "m": "voice/ped_hit_03_m.mp3"
+  },
+  "ped_hit_04": {
+   "f": "voice/ped_hit_04_f.mp3",
+   "m": "voice/ped_hit_04_m.mp3"
+  },
+  "ped_hit_05": {
+   "f": "voice/ped_hit_05_f.mp3",
+   "m": "voice/ped_hit_05_m.mp3"
+  },
+  "player_down_01": {
+   "m": "voice/player_down_01_m.mp3"
+  },
+  "player_horn_01": {
+   "m": "voice/player_horn_01_m.mp3"
+  },
+  "player_hurt_01": {
+   "m": "voice/player_hurt_01_m.mp3"
+  },
+  "player_hurt_02": {
+   "m": "voice/player_hurt_02_m.mp3"
+  },
+  "player_punch_01": {
+   "m": "voice/player_punch_01_m.mp3"
+  },
+  "ride_01": {
+   "f": "voice/ride_01_f.mp3",
+   "m": "voice/ride_01_m.mp3"
+  },
+  "ride_02": {
+   "f": "voice/ride_02_f.mp3",
+   "m": "voice/ride_02_m.mp3"
+  },
+  "ride_03": {
+   "f": "voice/ride_03_f.mp3",
+   "m": "voice/ride_03_m.mp3"
+  },
+  "ride_04": {
+   "f": "voice/ride_04_f.mp3",
+   "m": "voice/ride_04_m.mp3"
+  },
+  "ride_crash_01": {
+   "f": "voice/ride_crash_01_f.mp3",
+   "m": "voice/ride_crash_01_m.mp3"
+  },
+  "rider_01": {
+   "m": "voice/rider_01_m.mp3"
+  },
+  "rider_02": {
+   "m": "voice/rider_02_m.mp3"
+  },
+  "rider_03": {
+   "m": "voice/rider_03_m.mp3"
+  },
+  "shop_01": {
+   "m": "voice/shop_01_m.mp3"
+  },
+  "shop_02": {
+   "m": "voice/shop_02_m.mp3"
+  },
+  "shot_01": {
+   "f": "voice/shot_01_f.mp3",
+   "m": "voice/shot_01_m.mp3"
+  },
+  "shot_02": {
+   "f": "voice/shot_02_f.mp3",
+   "m": "voice/shot_02_m.mp3"
+  },
+  "thanks_01": {
+   "f": "voice/thanks_01_f.mp3",
+   "m": "voice/thanks_01_m.mp3"
+  },
+  "thanks_02": {
+   "f": "voice/thanks_02_f.mp3",
+   "m": "voice/thanks_02_m.mp3"
+  },
+  "thanks_03": {
+   "f": "voice/thanks_03_f.mp3",
+   "m": "voice/thanks_03_m.mp3"
+  },
+  "thanks_04": {
+   "f": "voice/thanks_04_f.mp3",
+   "m": "voice/thanks_04_m.mp3"
+  },
+  "traffic_cop_01": {
+   "m": "voice/traffic_cop_01_m.mp3"
+  }
+ },
+ "sfx": {
+  "amb_city": "sfx/amb_city.mp3",
+  "amb_lake": "sfx/amb_lake.mp3",
+  "bell_rickshaw": "sfx/bell_rickshaw.mp3",
+  "crash": "sfx/crash.mp3",
+  "door": "sfx/door.mp3",
+  "eng_bike": "sfx/eng_bike.mp3",
+  "eng_bus": "sfx/eng_bus.mp3",
+  "eng_car": "sfx/eng_car.mp3",
+  "eng_cng": "sfx/eng_cng.mp3",
+  "glass": "sfx/glass.mp3",
+  "gunshot": "sfx/gunshot.mp3",
+  "horn_bike": "sfx/horn_bike.mp3",
+  "horn_bus": "sfx/horn_bus.mp3",
+  "horn_car": "sfx/horn_car.mp3",
+  "horn_cng": "sfx/horn_cng.mp3",
+  "money": "sfx/money.mp3",
+  "phone": "sfx/phone.mp3",
+  "punch": "sfx/punch.mp3",
+  "siren_ambulance": "sfx/siren_ambulance.mp3",
+  "siren_police": "sfx/siren_police.mp3",
+  "step": "sfx/step.mp3",
+  "whistle": "sfx/whistle.mp3"
+ }
+}

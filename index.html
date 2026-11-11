@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#14202b">
+  <link rel="icon" href="data:,">
+  <title>শহরের পথে</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@500;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="importmap">
+    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/" } }
+  </script>
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <div id="loading" class="screen">
+    <div class="card small"><h1>শহরের পথে</h1><p id="loadingMsg">শহর বানানো হচ্ছে…</p></div>
+  </div>
+
+  <div id="hud" class="hidden">
+    <div class="wallet">
+      <div class="money" id="money">৳০</div>
+      <div class="meta">রেটিং <b id="rating">৪.৫</b> ★ · কাজ <b id="jobsDone">০</b></div>
+      <div class="hp" aria-label="স্বাস্থ্য"><i id="hpFill"></i></div>
+      <div class="hp breath hidden" id="breath" aria-label="দম"><i id="breathFill"></i></div>
+      <div class="weapon" id="weapon">খালি হাত</div>
+      <div id="stars" class="stars hidden"></div>
+      <div class="clock" id="clock"></div>
+    </div>
+    <div id="cross" class="cross hidden"></div>
+    <div id="hurt" class="hurt"></div>
+    <div class="mapbox">
+      <canvas id="minimap" width="180" height="180"></canvas>
+      <div class="icons">
+        <button id="btnPhone" type="button" title="ফোন (J)">ফোন</button>
+        <button id="btnMap" type="button" title="বড় ম্যাপ (M)">ম্যাপ</button>
+        <button id="btnBag" type="button" title="ব্যাগ (B)">ব্যাগ</button>
+        <button id="btnSound" type="button" aria-label="শব্দ">🔊</button>
+        <button id="btnPause" type="button" aria-label="থামান">⏸</button>
+      </div>
+    </div>
+    <div id="jobPanel" class="job hidden">
+      <div class="jt" id="jobType"></div>
+      <div class="jx" id="jobText"></div>
+      <div class="jd"><span id="jobDist"></span> <span id="jobTimer"></span></div>
+    </div>
+    <div id="speedo" class="speedo hidden"><b id="speed">০</b><span>কিমি/ঘ</span><small id="vehName"></small><div id="fuelGauge" class="fuelg hidden"><i><b></b></i><span></span></div></div>
+    <div id="rideReq" class="ridereq hidden"><div class="rr-app">🚗 ঝটপট রাইড · নতুন রিকোয়েস্ট</div><div class="rr-who"></div><div class="rr-route"></div><div class="rr-meta"></div><div class="rr-row"><em class="rr-fare"></em><button type="button" class="rr-no">বাদ</button><button type="button" class="rr-yes">নিন (Y)</button></div><i class="rr-bar"><b class="rr-time"></b></i></div>
+    <div id="prompt" class="prompt"></div>
+    <div id="bustBar" class="bustbar hidden"><span>পুলিশ ধরে ফেলছে! পালান</span><i><b id="bustFill"></b></i></div>
+    <div id="toasts" class="toasts"></div>
+    <div id="announce" class="announce"></div>
+    <div id="bubbles"></div>
+    <div id="waypoint" class="waypoint"><i></i><span></span></div>
+    <div class="keyhint">মাউস: চারপাশ দেখা (ক্লিক করুন) · <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> চলা · <kbd>F</kbd> ওঠা/নামা · <kbd>J</kbd> ফোন · <kbd>M</kbd> ম্যাপ · বাম ক্লিক ঘুষি (পরপর: কম্বো)/গুলি · ডান ক্লিক লাথি/নিশানা · <kbd>C</kbd> ব্লক · <kbd>R</kbd> মেরামত · <kbd>1</kbd><kbd>2</kbd> হাত/পিস্তল</div>
+
+    <div id="phone" class="phone hidden">
+      <div class="phone-top"><b>কাজ</b><span>আশেপাশের অর্ডার</span><button id="phoneClose" type="button" aria-label="বন্ধ">✕</button></div>
+      <div id="offers" class="offers"></div>
+      <div class="phone-tip">১, ২, ৩ চেপে বা ছুঁয়ে কাজ নিন। যাত্রী নিতে যানবাহন লাগবে; খাবার আর পার্সেল হেঁটেও পৌঁছানো যায়।</div>
+    </div>
+  </div>
+
+  <div id="touch" class="touch hidden">
+    <div class="joy"><div class="knob"></div></div>
+    <div class="lookpad"></div>
+    <div class="tbtns">
+      <button type="button" data-key="use" class="t-btn use">ব্যবহার</button>
+      <button type="button" data-key="repair" class="t-btn fix">মেরামত</button>
+      <button type="button" data-key="act" class="t-btn act">তেল ভরুন</button>
+      <button type="button" data-key="fight" class="t-round fightb" aria-label="মারামারি (নিজে বেছে ঘুষি/লাথি)">👊</button>
+      <button type="button" data-key="space" class="t-round jump" aria-label="লাফ">⤴</button>
+      <button type="button" data-key="run" class="t-round sprint" aria-label="দৌড়">🏃</button>
+      <button type="button" data-key="shoot" class="t-round gun" aria-label="গুলি">🔫</button>
+      <button type="button" data-key="horn" class="t-round horn" aria-label="হর্ন">📯</button>
+    </div>
+    <!-- GTA মোবাইলের মতো চালানোর বোতাম: বামে ডান-বাম, ডানে গ্যাস আর ব্রেক -->
+    <div class="dpad">
+      <button type="button" data-key="left" class="t-arrow" aria-label="বামে">◀</button>
+      <button type="button" data-key="right" class="t-arrow" aria-label="ডানে">▶</button>
+    </div>
+    <div class="pedals">
+      <button type="button" data-key="down" class="t-pedal brake" aria-label="ব্রেক/পিছনে">▼<small>ব্রেক</small></button>
+      <button type="button" data-key="up" class="t-pedal gas" aria-label="গ্যাস">▲<small>গ্যাস</small></button>
+    </div>
+  </div>
+  <div id="rotate" class="rotate"><div><div class="rot-ico">📱↻</div><b>ফোনটা আড়াআড়ি (ল্যান্ডস্কেপ) ধরুন</b><small>শহরের পথে আড়াআড়ি পর্দায় খেলতে হয়</small></div></div>
+
+  <div id="start" class="screen">
+    <div class="card">
+      <div class="tag">ডেমো · আসল ম্যাপ: মিরপুর ১০, মিরপুর ২, সেনপাড়া</div>
+      <h1>শহরের পথে</h1>
+      <p class="lead">হেঁটে ঘুরুন, বাইক-রিকশা-সিএনজি-গাড়ি চালান, ফোনে কাজ নিয়ে টাকা কামান। মিরপুর ১০ গোলচত্বর, বেগম রোকেয়া সরণী, মেট্রোর নিচ দিয়ে সেনপাড়ার গলি পর্যন্ত আপনার শহর।</p>
+      <div class="cols">
+        <div>
+          <h2>হেঁটে</h2>
+          <ul>
+            <li><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> চলা, <kbd>Shift</kbd> দৌড়</li>
+            <li><kbd>Space</kbd> লাফ</li>
+            <li><kbd>F</kbd> পাশের যানবাহনে ওঠা</li>
+            <li>ক্যানভাসে ক্লিক করে মাউস দিয়ে চারপাশ দেখুন (<kbd>Esc</kbd> ছাড়ে)</li>
+            <li>বাম ক্লিক ঘুষি (পরপর চাপলে জ্যাব → ক্রস → হুক) বা গুলি; খালি হাতে ডান ক্লিক লাথি (একবার পায়ে, একবার সামনে; কেউ পড়ে থাকলে মাড়ানো); <kbd>C</kbd> ধরে রাখলে ব্লক</li>
+            <li>পিস্তল হাতে ডান ক্লিক ধরে নিশানা; দোকানদারের দিকে তাক করে ধরে রাখলে ডাকাতি; <kbd>1</kbd> খালি হাত, <kbd>2</kbd> পিস্তল</li>
+          </ul>
+        </div>
+        <div>
+          <h2>চালানোর সময়</h2>
+          <ul>
+            <li><kbd>W</kbd> গতি, <kbd>S</kbd> ব্রেক/পিছে, <kbd>A</kbd><kbd>D</kbd> ঘোরানো</li>
+            <li><kbd>Space</kbd> হ্যান্ডব্রেক, <kbd>H</kbd> হর্ন</li>
+            <li><kbd>F</kbd> নামা (চলন্ত অবস্থায় লাফ দিয়ে), মাউসের চাকা দিয়ে ক্যামেরা দূরে-কাছে</li>
+            <li>ধাক্কার জায়গায় টোল পড়ে; অনেক ধাক্কা আর গুলিতে সাদা ধোঁয়া → কালো ধোঁয়া → আগুন → বিস্ফোরণ। আগুন লাগলে সাথে সাথে নামুন! <kbd>R</kbd> মেকানিক</li>
+            <li>খুব জোরে পাশ থেকে ধাক্কা, বাসের ধাক্কা বা হ্যান্ডব্রেক টেনে জোরে বাঁক নিলে উল্টাতে পারে</li>
+          </ul>
+        </div>
+        <div>
+          <h2>কাজ</h2>
+          <ul>
+            <li><kbd>J</kbd> ফোন খুলে তিনটা অর্ডার থেকে বেছে নিন</li>
+            <li><kbd>M</kbd> বড় ম্যাপ: টেনে সরান, চাকা দিয়ে বড়-ছোট, ক্লিক করে মার্ক দিলে বেগুনি GPS পথ। <kbd>N</kbd> শব্দ বন্ধ/চালু</li>
+            <li>হলুদ আলো: তোলার জায়গা, সবুজ: পৌঁছানোর জায়গা</li>
+            <li>মিনি-ম্যাপের বেগুনি দাগ ধরে যান। ধাক্কা খেলে টাকা আর রেটিং কমে</li>
+            <li>পুলিশ নিজে দেখলে (বা কাছে গুলির শব্দ শুনলে) তবেই মামলা, তারপর তাড়া। মিনি-ম্যাপের লাল-নীল বৃত্তের বাইরে গিয়ে লুকিয়ে থাকলে তারকা মুছে যায়। ধরা পড়লে জরিমানা আর থানায় আটক, মারা গেলে হাসপাতাল</li>
+            <li>সময় চলে: সন্ধ্যায় বাতি জ্বলে, মাঝে মাঝে বৃষ্টি নামে (ভেজা রাস্তায় চাকা একটু পিছলায়)</li>
+            <li>হাসপাতাল, থানা, রেস্টুরেন্ট, অস্ত্রের দোকান, অফিসের দরজায় <kbd>F</kbd>: ভিতরে মানুষ কাজ করছে; কাউন্টারে খাবার, চিকিৎসা, চাকরি (অ্যাম্বুলেন্স, পুলিশ, দোকানের শিফট)</li>
+            <li>বড় রাস্তায় বাস কাউন্টার (মিনি-ম্যাপে "বা"): <kbd>F</kbd> চেপে টিকিট কেটে যাত্রী হয়ে বাসে চড়ুন বা বাস চালকের চাকরি নিন। রাস্তায় ইজিবাইক, ব্যাটারি রিকশা, লেগুনা, ট্রাক, পিকআপ, ভ্যানগাড়ি</li>
+            <li>মেট্রোরেল: ফুটপাতের সবুজ "M" গেটে <kbd>F</kbd>: ভিতরে লাইনে টিকিট কেটে, গেট পার হয়ে চলন্ত সিঁড়িতে প্ল্যাটফর্মে; চড়ুন, নিজে চালান (<kbd>W</kbd>/<kbd>S</kbd>) বা চালকের চাকরি নিন</li>
+            <li>সব দোকান, স্কুল, মাদ্রাসা, আদালত, ব্যাংক, বিদ্যুৎ অফিস, ডাকঘরের খোলা দরজার সামনে <kbd>F</kbd>: ভিতরে কেনাকাটা, ক্লাস নেওয়া, মামলা মেটানো, টাকা জমা, কাজ। <kbd>B</kbd> ব্যাগ (কেনা খাবার-ওষুধ)। ম্যাপে স্কু/মা/⚖/৳/⚡/ডা চিহ্ন</li>
+            <li>রাস্তায় গর্ত আর মেরামতের কাজ: গর্তে জোরে পড়লে ঝাঁকুনি আর গাড়ির ক্ষতি, ব্যারিকেডে ধাক্কা লাগে</li>
+            <li>বিমান: <kbd>W</kbd> জোরে, রানওয়েতে <kbd>Space</kbd> ওড়া, আকাশে <kbd>S</kbd>/<kbd>Shift</kbd> ধরে রাখলে আস্তে নামে, মাটিতে <kbd>S</kbd> ব্রেক</li>
+            <li>মেট্রো গেটে টিকিট ছাড়া <kbd>Space</kbd>: লাফিয়ে পার (নিরাপত্তাকর্মী দেখলে ৳১০০ জরিমানা)। টাকা না থাকলে −৳২,০০০ পর্যন্ত বাকিতে কেনা যায়</li>
+            <li>উত্তরে বিমানবন্দর (বিমান, হেলিকপ্টার, পাইলটের কাজ), পশ্চিমে তুরাগ নদীর ঘাট (স্পিডবোট), হাসপাতাল-থানা-অফিসের ছাদে হেলিকপ্টার। হেলিকপ্টার: <kbd>Space</kbd> উপরে, <kbd>Shift</kbd> নিচে</li>
+            <li>নদী-পুকুরে নামলে সাঁতার: <kbd>Space</kbd> ধরে ডুব (দমের নীল দাগ দেখুন)। যানবাহন পানিতে পড়লে ডুবে যায়, <kbd>F</kbd> চেপে বের হন</li>
+            <li>শুরু থেকেই পিস্তল আর ৪৮টা গুলি; আরও গুলি সেনপাড়ার অস্ত্রের দোকানে (মিনি-ম্যাপে "অ")</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note">শুরুতে মিরপুর ১০-এর কাছের একটা গলিতে আপনার বাইক, রিকশা, সিএনজি আর গাড়ি রাখা আছে। রাস্তা আর বিল্ডিং আসল ম্যাপ থেকে (© OpenStreetMap contributors); বিল্ডিংয়ের উচ্চতা আর দোকানের নাম বানানো।</p>
+      <button id="btnStart" type="button" class="btn primary">শহরে নামুন</button>
+        <div id="verLabel" class="ver-label"></div>
+    </div>
+  </div>
+
+  <div id="pause" class="screen hidden">
+    <div class="card small">
+      <h2>থামানো আছে</h2>
+      <button id="btnResume" type="button" class="btn primary">চালিয়ে যান</button>
+      <label class="check"><input id="touchToggle" type="checkbox"> টাচ কন্ট্রোল দেখান</label>
+      <label class="check gfx">গ্রাফিক্স
+        <select id="gfxSel"><option value="low">সাধারণ (দ্রুত, ফোনের জন্য)</option><option value="high">উঁচু মান (আসলের মতো আলো আর ঝলক)</option></select>
+      </label>
+      <button id="btnReset" type="button" class="btn">টাকা আর রেটিং নতুন করে শুরু</button>
+    </div>
+  </div>
+
+  <div id="busted" class="screen hidden">
+    <div class="card small case">
+      <div class="stamp">মামলা রুজু</div>
+      <div class="case-no" id="caseNo"></div>
+      <div class="case-stars" id="caseStars"></div>
+      <h3>অভিযোগ</h3>
+      <ul id="caseList"></ul>
+      <div class="case-row"><span>জরিমানা</span><b id="caseFine"></b></div>
+      <div class="case-paid" id="casePaid"></div>
+      <div class="case-row"><span id="caseHours"></span></div>
+      <div class="jail"><i id="jailBar"></i></div>
+      <button id="btnRelease" type="button" class="btn primary" disabled>ছাড়া পেয়ে বের হন</button>
+      <p class="case-note">যানবাহন শুরুর গলিতে ফেরত, চলমান কাজ বাতিল, রেটিং কমেছে।</p>
+    </div>
+  </div>
+
+  <div id="bigmap" class="bigmap hidden">
+    <canvas id="bigmapCanvas"></canvas>
+    <div class="bm-top">
+      <b>মিরপুর</b>
+      <span id="bmInfo"></span>
+      <button id="bmClose" type="button" aria-label="বন্ধ">✕</button>
+    </div>
+    <div class="bm-tools">
+      <button id="bmIn" type="button" aria-label="বড়">＋</button>
+      <button id="bmOut" type="button" aria-label="ছোট">－</button>
+      <button id="bmMe" type="button">আমি</button>
+      <button id="bmClear" type="button">মার্ক মুছুন</button>
+    </div>
+    <div class="bm-legend">
+      <span><i style="background:#1a3f8a">থ</i>থানা</span><span><i style="background:#c62828">+</i>হাসপাতাল</span><span><i style="background:#222">অ</i>অস্ত্র</span>
+      <span><i style="background:#e65100">🍴</i>রেস্টুরেন্ট</span><span><i style="background:#6d4c41">প</i>কুরিয়ার</span><span><i style="background:#2f6f9f">M</i>মেট্রো</span>
+      <span><i style="background:#1565c0">স্কু</i>স্কুল</span><span><i style="background:#00695c">মা</i>মাদ্রাসা</span><span><i style="background:#6d4c41">⚖</i>আদালত</span><span><i style="background:#2e7d32">৳</i>ব্যাংক</span><span><i style="background:#f9a825">⚡</i>বিদ্যুৎ অফিস</span><span><i style="background:#d84315">ডা</i>ডাকঘর</span><span><i style="background:#37474f">মো</i>মোটর শোরুম</span><span><i style="background:#8e24aa">দো</i>দোকান</span>
+      <span><i style="background:#00897b">🚗</i>আপনার যানবাহন</span><span><i style="background:#2a5bff"></i>পুলিশ</span><span><i style="background:#b026ff"></i>মার্ক</span>
+    </div>
+  </div>
+
+  <div id="dialog" class="screen hidden">
+    <div class="card small shopcard">
+      <h2 id="dlgTitle"></h2>
+      <p class="shop-sub" id="dlgSub"></p>
+      <div id="dlgItems"></div>
+      <button id="dlgClose" type="button" class="btn">বন্ধ (Esc)</button>
+    </div>
+  </div>
+
+  <div id="shop" class="screen hidden">
+    <div class="card small shopcard">
+      <h2>অস্ত্রের দোকান</h2>
+      <p class="shop-sub">"ভাই, কাউরে বইলেন না কই থেকে নিছেন।"</p>
+      <div class="shop-row"><div><b>পিস্তল</b><small id="pistolState">একবার কিনলে সবসময় থাকবে</small></div><button id="buyPistol" type="button" class="btn small">৳২,০০০</button></div>
+      <div class="shop-row"><div><b>গুলি ৩০টা</b><small id="ammoState">কাছে আছে ০টা</small></div><button id="buyAmmo" type="button" class="btn small">৳৩০০</button></div>
+      <div class="shop-money">আপনার কাছে <b id="shopMoney">৳০</b></div>
+      <button id="shopClose" type="button" class="btn">বের হন</button>
+    </div>
+  </div>
+
+  <div id="wasted" class="screen hidden">
+    <div class="card small case hospital">
+      <div class="stamp">হাসপাতাল</div>
+      <div class="case-no" id="wastedCause"></div>
+      <h3>মিরপুর জেনারেল হাসপাতাল</h3>
+      <ul><li>জ্ঞান ফিরেছে, চিকিৎসা শেষ</li><li>পুলিশের তাড়া বন্ধ, চলমান কাজ বাতিল</li></ul>
+      <div class="case-row"><span>হাসপাতালের বিল</span><b id="wastedBill"></b></div>
+      <div class="case-paid" id="wastedPaid"></div>
+      <div class="jail"><i id="wardBar"></i></div>
+      <button id="btnHospital" type="button" class="btn primary" disabled>হাসপাতাল থেকে বের হন</button>
+      <p class="case-note">যানবাহন শুরুর গলিতে ফেরত।</p>
+    </div>
+  </div>
+
+  <div id="error" class="error hidden"></div>
+  <script>
+    // সমস্যা দেখানো: কোন ফাইলের কোন লাইনে (স্ক্রিনশট দিলে ধরা যায়); ছুঁলে বা ১৫ সেকেন্ডে সরে যায়, খেলা চলতে থাকে
+    (function () {
+      var el = document.getElementById('error'), hideT = null;
+      function show(msg) {
+        el.classList.remove('hidden');
+        el.textContent = 'সমস্যা: ' + msg + '  (ছুঁলে সরে যাবে)';
+        clearTimeout(hideT); hideT = setTimeout(function () { el.classList.add('hidden'); }, 15000);
+      }
+      el.addEventListener('click', function () { el.classList.add('hidden'); });
+      window.addEventListener('error', function (e) {
+        if (!e.message) return; // ছবি/ফাইল লোডের ভুল (সেগুলো কোড নিজেই সামলায়)
+        var where = e.filename ? ' [' + String(e.filename).split('/').pop().split('?')[0] + ':' + (e.lineno || '?') + ']' : '';
+        show(e.message + where);
+      });
+      window.addEventListener('unhandledrejection', function (e) {
+        var r = e.reason; show('(promise) ' + ((r && (r.message || r)) || 'অজানা'));
+      });
+    })();
+    setTimeout(function () {
+      if (!window.__spReady) {
+        var m = document.getElementById('loadingMsg');
+        if (m) m.innerHTML = 'অনেক সময় লাগছে… index.html সরাসরি খুললে চলবে না।<br>লোকাল সার্ভার চালান (README.md দেখুন), ইন্টারনেট লাগবে।';
+      }
+    }, 10000);
+  </script>
+  <script type="module" src="js/main.js?v=34"></script>
+</body>
+</html>
